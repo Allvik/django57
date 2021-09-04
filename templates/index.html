@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Здесь можно сыграть в ЧГК!</title>
+</head>
+<body>
+    <div>
+        Войдите, если у вас уже есть аккаунт
+        <form action="/enter_account" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    <div>
+        Зарегистрируйтесь, если вы тут впервые
+        <form action="/create_account" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</body>
+</html>

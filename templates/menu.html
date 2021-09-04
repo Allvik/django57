@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Ваш личный кабинет</title>
+</head>
+<body>
+    <div>
+        Добро пожаловать, {{nick}}!
+    </div>
+    <div>
+        Список ваших игр:
+        <ul>
+            {% for i in games %}
+                <li>
+                    Войти в {{i.name}}
+                    <form action="go_to_game" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{i.short_name}}">
+                        <input type="submit">
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% if is_super_user %}
+        <div>
+            Создать игру:
+            <form>
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit">
+            </form>
+        </div>
+    {% endif %}
+</body>
+</html>
