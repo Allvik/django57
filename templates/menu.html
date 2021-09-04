@@ -26,7 +26,7 @@
     {% if is_super_user %}
         <div>
             Создать игру:
-            <form>
+            <form method="post" action="game/create">
                 {% csrf_token %}
                 {{ form }}
                 <input type="submit">
