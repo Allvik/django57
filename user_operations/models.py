@@ -23,8 +23,6 @@ class my_user(models.Model):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.my_games = all_games()
-        self.my_games.save()
 
     def add_game(self, cur_game):
         self.my_games.add_game(cur_game)

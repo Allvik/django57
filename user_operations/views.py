@@ -37,14 +37,16 @@ def create_account(request):
     if not check_method_post(request):
         return HttpResponse("Не тот тип запроса")
     form = forms.account_form(request.POST)
-    if not form.is_valid() or get_user(nick=form.cleaned_data['nick']) is None:
+    if not form.is_valid() or get_user(nick=form.cleaned_data['nick']) is not None:
         return HttpResponse("Некорректные данные")
     new_user = user_operations.models.my_user(nick=form.cleaned_data['nick'], password=form.cleaned_data['password'],
-                                              is_super_user=False)
+                                              is_super_user=form.cleaned_data['is_super_user'])
+    new_user.my_games = user_operations.models.all_games()
+    new_user.my_games.save()
     new_user.save()
     response = HttpResponseRedirect('/menu')
     response.set_cookie('user', new_user.id)
-    return
+    return response
 
 
 def enter_account(request):
@@ -64,5 +66,6 @@ def enter_account(request):
 def get_menu(request):
     if not check_method_get(request) or not check_user_cookie(request):
         return HttpResponse("Не тот метод или нет куки")
-    cur_user = get_user(id=request.COOKIES['user'])
-    return render(request, "menu.html", {'nick': cur_user.nick, 'games': cur_user.my_games.games.all()})
+    cur_user = get_user(id=int(request.COOKIES['user']))
+    return render(request, "menu.html", {'nick': cur_user.nick, 'games': cur_user.my_games.games.all(),
+                                         'is_super_user': cur_user.is_super_user})
