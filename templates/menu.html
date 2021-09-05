@@ -13,12 +13,7 @@
         <ul>
             {% for i in games %}
                 <li>
-                    Войти в {{i.name}}
-                    <form action="go_to_game" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" value="{{i.short_name}}">
-                        <input type="submit">
-                    </form>
+                    <a href="game/{{ i.short_name }}"> Войти в {{ i.name }}</a>
                 </li>
             {% endfor %}
         </ul>

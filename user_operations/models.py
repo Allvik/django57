@@ -1,9 +1,11 @@
 from django.db import models
-import game_operations.models
 
 
 class all_games(models.Model):
-    games = models.ManyToManyField(game_operations.models.game)
+    games = models.ManyToManyField('game_operations.game')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     def add_game(self, cur_game):
         self.games.add(cur_game)
@@ -19,7 +21,7 @@ class my_user(models.Model):
     nick = models.CharField(max_length=20)
     password = models.CharField(max_length=20)
     is_super_user = models.BooleanField()
-    my_games = models.ForeignKey(all_games, on_delete=models.CASCADE)
+    my_games = models.ForeignKey('all_games', on_delete=models.CASCADE)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
