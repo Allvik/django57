@@ -2,7 +2,7 @@ from django.shortcuts import render
 from user_operations.forms import account_form
 from game_operations.forms import create_game_form, enter_game_form
 from django.http import HttpResponseRedirect, HttpResponse
-from user_operations.models import my_user, all_games
+from user_operations.models import my_user
 import lib
 
 
@@ -18,8 +18,6 @@ def create_account(request):
         return HttpResponse("Некорректные данные")
     new_user = my_user(nick=form.cleaned_data['nick'], password=form.cleaned_data['password'],
                                               is_super_user=form.cleaned_data['is_super_user'])
-    new_user.my_games = all_games()
-    new_user.my_games.save()
     new_user.save()
     response = HttpResponseRedirect('/menu')
     response.set_cookie('user', new_user.id)
@@ -46,7 +44,7 @@ def get_menu(request):
     cur_user = lib.get_user(id=int(request.COOKIES['user']))
     if cur_user is None:
         return HttpResponse("Вас не существует")
-    print(len(cur_user.my_games.games.all()))
-    return render(request, "menu.html", {'nick': cur_user.nick, 'games': cur_user.my_games.games.all(),
+    print(len(cur_user.my_games.all()))
+    return render(request, "menu.html", {'nick': cur_user.nick, 'games': cur_user.my_games.all(),
                                          'is_super_user': cur_user.is_super_user,
                                          'create_form': create_game_form, 'enter_form': enter_game_form})
