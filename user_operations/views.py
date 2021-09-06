@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from user_operations.forms import account_form
-from game_operations.forms import game_form
+from game_operations.forms import create_game_form, enter_game_form
 from django.http import HttpResponseRedirect, HttpResponse
 from user_operations.models import my_user, all_games
 import lib
@@ -49,4 +49,4 @@ def get_menu(request):
     print(len(cur_user.my_games.games.all()))
     return render(request, "menu.html", {'nick': cur_user.nick, 'games': cur_user.my_games.games.all(),
                                          'is_super_user': cur_user.is_super_user,
-                                         'form': game_form})
+                                         'create_form': create_game_form, 'enter_form': enter_game_form})

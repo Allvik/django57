@@ -23,10 +23,18 @@
             Создать игру:
             <form method="post" action="game/create">
                 {% csrf_token %}
-                {{ form }}
+                {{ create_form }}
                 <input type="submit">
             </form>
         </div>
     {% endif %}
+     <div>
+         Войти в игру:
+         <form method="post" action="game/enter">
+             {% csrf_token %}
+             {{ enter_form }}
+             <input type="submit">
+         </form>
+     </div>
 </body>
 </html>

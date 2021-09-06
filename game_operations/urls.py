@@ -4,5 +4,6 @@ from game_operations import views
 
 urlpatterns = [
     path('create', views.create),
+    path('enter', views.enter),
     path('<short_name>/', views.game_menu)
 ]
