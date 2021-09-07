@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from game_operations.forms import create_game_form, enter_game_form
 from user_operations.models import my_user
-from game_operations.models import game
+from game_operations.models import game, users_answers
 from django.http import HttpResponseRedirect, HttpResponse
 import lib
 
@@ -17,8 +17,11 @@ def create(request):
         return HttpResponse("Неправильная форма")
     if lib.get_game(short_name=form.cleaned_data['short_name']) is not None:
         return HttpResponse("Придумайте другое короткое название")
+    answers = users_answers()
+    answers.save()
     new_game = game(name=form.cleaned_data['name'], short_name=form.cleaned_data['short_name'],
-                           password=form.cleaned_data['password'], count_rounds=form.cleaned_data['count_rounds'])
+                           password=form.cleaned_data['password'], count_rounds=form.cleaned_data['count_rounds'], answers=answers)
+
     new_game.save()
     cur_user.add_game(new_game)
     return HttpResponseRedirect(f"{new_game.short_name}")
@@ -44,8 +47,9 @@ def game_menu(request, short_name):
     if not lib.check_user_cookie(request) or not lib.check_method_get(request):
         return HttpResponse("Нет кук или не тот метод")
     cur_user = lib.get_user(id=request.COOKIES['user'])
-    cur_game = lib.get_game(short_name=short_name)
-    if cur_user is None or cur_game is None:
+    cur_game = cur_user.my_games.filter(short_name=short_name)
+    if cur_user is None or len(cur_game) == 0:
         return HttpResponse("Такого пользователя или игры не существует")
-
-    return HttpResponse(f"Игра - {short_name}")
+    cur_game = cur_game[0]
+    return render(request, 'game_menu.html', {'game': cur_game, 'user_in_game': cur_game.users_information.filter(user=cur_user)[0],
+                            'answers': cur_game.answers.answers.all()})

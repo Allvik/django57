@@ -6,7 +6,7 @@
 </head>
 <body>
     <div>
-        Добро пожаловать, {{nick}}!
+        Добро пожаловать, {{user.nick}}!
     </div>
     <div>
         Список ваших игр:
@@ -18,7 +18,7 @@
             {% endfor %}
         </ul>
     </div>
-    {% if is_super_user %}
+    {% if user.is_super_user %}
         <div>
             Создать игру:
             <form method="post" action="game/create">
