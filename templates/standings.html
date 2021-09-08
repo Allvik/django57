@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Результаты</title>
+</head>
+<body>
+    <div>
+        {% for i in results %}
+            <div> {{ i.user.nick }} </div>
+            {% for i in i.user_results %}
+                {% if i %}
+                    +
+                {% else %}
+                    -
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+</body>
+</html>

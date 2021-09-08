@@ -40,3 +40,14 @@ def get_game(**kwargs):
     if len(cur_games) == 0:
         return None
     return cur_games[0]
+
+
+def get_user_and_game(request, short_name):
+    if not check_user_cookie(request) or not check_method_get(request):
+        return (None, None)
+    cur_user = get_user(id=int(request.COOKIES['user']))
+    cur_game = cur_user.my_games.filter(short_name=short_name)
+    if cur_user is None or len(cur_game) == 0:
+        return (None, None)
+    cur_game = cur_game[0]
+    return (cur_user, cur_game)

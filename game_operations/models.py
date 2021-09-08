@@ -10,10 +10,6 @@ class user_answer(models.Model):
         super().__init__(self, *args, **kwargs)
 
 
-class users_answers(models.Model):
-    answers = models.ManyToManyField('users_answers')
-
-
 class game(models.Model):
     name = models.CharField(max_length=30)
     short_name = models.CharField(max_length=10)
@@ -23,9 +19,17 @@ class game(models.Model):
     cur_round = models.IntegerField(default=1)
     round_started = models.BooleanField(default=False)
     time_last_round_start = models.DateTimeField(default=django.utils.timezone.now)
-    answers = models.ForeignKey('users_answers', on_delete=models.CASCADE, default=0)
+    answers = models.ManyToManyField('user_answer')
 
     def __init(self, *args, **kwargs):
         super().__init__(args, kwargs)
+
+    def get_results(self):
+        results = []
+        for i in self.users_information.all():
+            results.append(i)
+        return results
+
+
 
 
