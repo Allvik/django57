@@ -1,5 +1,5 @@
-from user_operations.models import my_user
-from game_operations.models import game
+from user_operations.models import My_user
+from game_operations.models import Game
 
 
 def check_method_post(request):
@@ -15,7 +15,7 @@ def check_user_cookie(request):
 
 
 def get_user(**kwargs):
-    cur_users = my_user.objects.all()
+    cur_users = My_user.objects.all()
     if "id" in kwargs:
         cur_users = cur_users.filter(id=kwargs['id'])
     if "nick" in kwargs:
@@ -28,7 +28,7 @@ def get_user(**kwargs):
 
 
 def get_game(**kwargs):
-    cur_games = game.objects.all()
+    cur_games = Game.objects.all()
     if "id" in kwargs:
         cur_games = cur_games.filter(id=kwargs['id'])
     if "name" in kwargs:
@@ -43,7 +43,7 @@ def get_game(**kwargs):
 
 
 def get_user_and_game(request, short_name):
-    if not check_user_cookie(request) or not check_method_get(request):
+    if not check_user_cookie(request):
         return (None, None)
     cur_user = get_user(id=int(request.COOKIES['user']))
     cur_game = cur_user.my_games.filter(short_name=short_name)

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Здесь вы можете проверять ответы</title>
+</head>
+<body>
+    <div>
+        {% for i in answers %}
+            Раунд {{ i.num_round }}
+            Ответ {{ i.answer }}
+            <form method="post" action="ok">
+                <input type="submit" value="Правильно">
+            </form>
+            <form method="post" action="no">
+                <input type="submit" value="Неправильно">
+            </form>
+        {% endfor %}
+    </div>
+</body>
+</html>

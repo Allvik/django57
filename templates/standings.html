@@ -7,14 +7,16 @@
 <body>
     <div>
         {% for i in results %}
-            <div> {{ i.user.nick }} </div>
-            {% for i in i.user_results %}
-                {% if i %}
-                    +
-                {% else %}
-                    -
-                {% endif %}
-            {% endfor %}
+            {% if not i.is_user_admin %}
+                <div> {{ i.user.nick }} </div>
+                {% for i in i.user_results %}
+                    {% if i %}
+                        +
+                    {% else %}
+                        -
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
         {% endfor %}
     </div>
 </body>

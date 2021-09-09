@@ -5,21 +5,34 @@
     <title>Меню игры</title>
 </head>
 <body>
-    <div>
-        Вы в меню игры {{game.name}}
-        <a href="/game/{{ game.short_name }}/standings">Ссылка на текущую таблицу результатов</a>
-        {% if game.round_started %}
-            Сейчас идет раунд {{ game.cur_round }}
-        {% else %}
-            Раунд {{ game.cur_round }} еще не начался
+<div>
+    Вы в меню игры {{ game.name }}
+    <a href="standings">Ссылка на текущую таблицу результатов</a>
+    {% if game.round_started %}
+        Сейчас идет раунд {{ game.cur_round }}
+        {% if not user_in_game.is_user_admin %}
+            <form method="post" action="send_answer">
+                {% csrf_token %}
+                <input name="answer" type="text">
+                <input type="submit" value="Отправить">
+            </form>
         {% endif %}
+    {% else %}
+        Раунд {{ game.cur_round }} еще не начался
+    {% endif %}
+</div>
+{% if user_in_game.is_user_admin %}
+    <div>
+        <a href="answers">Проверка ответов</a>
     </div>
-    {% if user_in_game.is_admin %}
+    {% if not game.round_started %}
         <div>
-            {% for i in answers %}
-                
-            {% endfor %}
+            <form method="post" action="start_round">
+                {% csrf_token %}
+                <input type="submit" value="Начать раунд {{ game.cur_round }}">
+            </form>
         </div>
     {% endif %}
+{% endif %}
 </body>
 </html>
