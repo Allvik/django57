@@ -10,9 +10,13 @@
             Раунд {{ i.num_round }}
             Ответ {{ i.answer }}
             <form method="post" action="ok">
+                {% csrf_token %}
+                <input type="hidden" name="answer_id" value="{{ i.id }}">
                 <input type="submit" value="Правильно">
             </form>
             <form method="post" action="no">
+                {% csrf_token %}
+                <input type="hidden" name="answer_id" value="{{ i.id }}">
                 <input type="submit" value="Неправильно">
             </form>
         {% endfor %}

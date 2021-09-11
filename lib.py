@@ -1,4 +1,4 @@
-from user_operations.models import My_user
+from user_operations.models import MyUser
 from game_operations.models import Game
 
 
@@ -15,7 +15,7 @@ def check_user_cookie(request):
 
 
 def get_user(**kwargs):
-    cur_users = My_user.objects.all()
+    cur_users = MyUser.objects.all()
     if "id" in kwargs:
         cur_users = cur_users.filter(id=kwargs['id'])
     if "nick" in kwargs:

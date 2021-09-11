@@ -10,5 +10,6 @@ urlpatterns = [
     path('<short_name>/answers', views.get_answers),
     path('<short_name>/start_round', views.start_round),
     path('<short_name>/send_answer', views.add_answer),
-    path('test', views.test)
+    path('<short_name>/ok', views.answer_ok),
+    path('<short_name>/ok', views.answer_no)
 ]

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from game_operations.forms import create_game_form, enter_game_form
-from game_operations.models import Game, User_answer
+from game_operations.models import Game, UserAnswer
 from django.http import HttpResponseRedirect, HttpResponse
 import lib
 import django.utils.timezone
@@ -28,7 +28,7 @@ def create(request):
     if lib.get_game(short_name=form.cleaned_data['short_name']) is not None:
         return HttpResponse("Придумайте другое короткое название")
     new_game = Game(name=form.cleaned_data['name'], short_name=form.cleaned_data['short_name'],
-                           password=form.cleaned_data['password'], count_rounds=form.cleaned_data['count_rounds'])
+                    password=form.cleaned_data['password'], count_rounds=form.cleaned_data['count_rounds'])
 
     new_game.save()
     cur_user.add_game(new_game)
@@ -56,8 +56,9 @@ def game_menu(request, short_name):
     if cur_user is None:
         return HttpResponse("Что-то пошло не так")
     update_game_state(cur_game)
-    return render(request, 'game_menu.html', {'game': cur_game, 'user_in_game': cur_game.users_information.filter(user=cur_user)[0],
-                            'answers': cur_game.answers.all()})
+    return render(request, 'game_menu.html',
+                  {'game': cur_game, 'user_in_game': cur_game.users_information.filter(user=cur_user)[0],
+                   'answers': cur_game.answers.all()})
 
 
 def get_standings(request, short_name):
@@ -94,23 +95,31 @@ def start_round(request, short_name):
 def add_answer(request, short_name):
     cur_user, cur_game = lib.get_user_and_game(request, short_name)
     if cur_user is None or cur_game.users_information.filter(user=cur_user)[0].is_user_admin:
-        return HttpResponse("Что-то пошло не так3")
+        return HttpResponse("Что-то пошло не так")
     update_game_state(cur_game)
     if not cur_game.round_started:
         return HttpResponse("Вы не успели(")
     user_in_game = cur_game.users_information.filter(user=cur_user)[0]
-   # previous_answer = cur_game.answers.filter(num_round=cur_game.cur_round, user=user_in_game)
-   # if len(previous_answer) > 0:
-    #    previous_answer = previous_answer[0]
-     #   previous_answer.delete()
-    cur_answer = User_answer(num_round=cur_game.cur_round, answer=request.POST['answer'], user=user_in_game)
+    cur_answer = UserAnswer(num_round=cur_game.cur_round, answer=request.POST['answer'], user=user_in_game)
     cur_answer.save()
     cur_game.answers.add(cur_answer)
     cur_game.save()
     return HttpResponseRedirect(f"/game/{short_name}")
 
 
-def test(request):
-    cur_answer = User_answer(num_round=1, answer="Flex")
-    cur_answer.save()
-    return HttpResponse("flex")
+def answer_ok(request, short_name):
+    cur_user, cur_game = lib.get_user_and_game(request, short_name)
+    if cur_user is None or not cur_game.users_information.filter(user=cur_user)[0].is_user_admin \
+            or "answer_id" not in request.POST or not request.POST["answer_id"].isdigit():
+        return HttpResponse("Что-то пошло не так")
+    cur_game.answer_ok(int(request.POST["answer_id"]))
+    return HttpResponseRedirect(f"/game/{short_name}/answers")
+
+
+def answer_no(request, short_name):
+    cur_user, cur_game = lib.get_user_and_game(request, short_name)
+    if cur_user is None or not cur_game.users_information.filter(user=cur_user)[0].is_user_admin \
+            or "answer_id" not in request.POST or not request.POST["answer_id"].isdigit():
+        return HttpResponse("Что-то пошло не так")
+    cur_game.answer_no(int(request.POST["answer_id"]))
+    return HttpResponseRedirect(f"/game/{short_name}/answers")

@@ -1,7 +1,6 @@
 from django.contrib import admin
-'''
-from game_operations.models import Game, User_answer
+
+from game_operations.models import Game, UserAnswer
 
 admin.site.register(Game)
-admin.site.register(User_answer)
-'''
+admin.site.register(UserAnswer)

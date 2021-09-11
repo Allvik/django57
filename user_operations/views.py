@@ -2,7 +2,7 @@ from django.shortcuts import render
 from user_operations.forms import account_form
 from game_operations.forms import create_game_form, enter_game_form
 from django.http import HttpResponseRedirect, HttpResponse
-from user_operations.models import My_user
+from user_operations.models import MyUser
 import lib
 
 
@@ -16,7 +16,7 @@ def create_account(request):
     form = account_form(request.POST)
     if not form.is_valid() or lib.get_user(nick=form.cleaned_data['nick']) is not None:
         return HttpResponse("Некорректные данные")
-    new_user = My_user(nick=form.cleaned_data['nick'], password=form.cleaned_data['password'],
+    new_user = MyUser(nick=form.cleaned_data['nick'], password=form.cleaned_data['password'],
                                               is_super_user=form.cleaned_data['is_super_user'])
     new_user.save()
     response = HttpResponseRedirect('/menu')
