@@ -33,6 +33,14 @@
             </form>
         </div>
     {% endif %}
+    <div>
+        Добавить администратора
+        <form method="POST" action="add_admin">
+            {% csrf_token %}
+            <input type="text" name="nick">
+            <input type="submit">
+        </form>
+    </div>
 {% endif %}
 </body>
 </html>

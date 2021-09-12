@@ -30,7 +30,7 @@ class Game(models.Model):
         if len(my_answer) == 0:
             return
         my_answer = my_answer[0]
-        my_answer.user.answer_ok(my_answer.num_round)
+        my_answer.user.answer_ok(my_answer.num_round - 1)
         my_answer.delete()
 
     def answer_no(self, answer_id):

@@ -44,10 +44,17 @@ def get_game(**kwargs):
 
 def get_user_and_game(request, short_name):
     if not check_user_cookie(request):
-        return (None, None)
+        return None, None
     cur_user = get_user(id=int(request.COOKIES['user']))
     cur_game = cur_user.my_games.filter(short_name=short_name)
     if cur_user is None or len(cur_game) == 0:
-        return (None, None)
+        return None, None
     cur_game = cur_game[0]
-    return (cur_user, cur_game)
+    return cur_user, cur_game
+
+
+def check_post_args(request, *args):
+    for i in args:
+        if i not in request.POST:
+            return False
+    return True

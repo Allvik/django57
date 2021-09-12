@@ -53,8 +53,8 @@ def enter(request):
 
 def game_menu(request, short_name):
     cur_user, cur_game = lib.get_user_and_game(request, short_name)
-    if cur_user is None:
-        return HttpResponse("Что-то пошло не так")
+    if cur_user is None or not lib.check_method_get(request):
+        return HttpResponse("Вас не существует или не тот метод")
     update_game_state(cur_game)
     return render(request, 'game_menu.html',
                   {'game': cur_game, 'user_in_game': cur_game.users_information.filter(user=cur_user)[0],
@@ -63,8 +63,8 @@ def game_menu(request, short_name):
 
 def get_standings(request, short_name):
     cur_user, cur_game = lib.get_user_and_game(request, short_name)
-    if cur_user is None:
-        return HttpResponse("Что-то пошло не так")
+    if cur_user is None or not lib.check_method_get(request):
+        return HttpResponse("Вас не существует или не тот метод")
     update_game_state(cur_game)
     results = cur_game.get_results()
     results.sort(key=lambda x: -sum(x.user_results))
@@ -73,16 +73,18 @@ def get_standings(request, short_name):
 
 def get_answers(request, short_name):
     cur_user, cur_game = lib.get_user_and_game(request, short_name)
-    if cur_user is None or not cur_game.users_information.filter(user=cur_user)[0].is_user_admin:
-        return HttpResponse("Что-то пошло не так")
+    if cur_user is None or not cur_game.users_information.filter(user=cur_user)[0].is_user_admin \
+            or not lib.check_method_get(request):
+        return HttpResponse("Вы не обладаете нужными правами или не тот метод")
     update_game_state(cur_game)
     return render(request, 'answers.html', {'answers': cur_game.answers.all()})
 
 
 def start_round(request, short_name):
     cur_user, cur_game = lib.get_user_and_game(request, short_name)
-    if cur_user is None or not cur_game.users_information.filter(user=cur_user)[0].is_user_admin:
-        return HttpResponse("Что-то пошло не так")
+    if cur_user is None or not cur_game.users_information.filter(user=cur_user)[0].is_user_admin or \
+            not lib.check_method_post(request):
+        return HttpResponse("Вы не обладаете нужными правами или не тот метод")
     update_game_state(cur_game)
     if cur_game.round_started:
         return HttpResponse("Сейчас уже идет раунд")
@@ -94,8 +96,9 @@ def start_round(request, short_name):
 
 def add_answer(request, short_name):
     cur_user, cur_game = lib.get_user_and_game(request, short_name)
-    if cur_user is None or cur_game.users_information.filter(user=cur_user)[0].is_user_admin:
-        return HttpResponse("Что-то пошло не так")
+    if cur_user is None or cur_game.users_information.filter(user=cur_user)[0].is_user_admin \
+            or not lib.check_method_post(request) or not lib.check_post_args(request, 'answer'):
+        return HttpResponse("Вы не обладаете нужными правами, не тот метод или нет ответа")
     update_game_state(cur_game)
     if not cur_game.round_started:
         return HttpResponse("Вы не успели(")
@@ -110,8 +113,9 @@ def add_answer(request, short_name):
 def answer_ok(request, short_name):
     cur_user, cur_game = lib.get_user_and_game(request, short_name)
     if cur_user is None or not cur_game.users_information.filter(user=cur_user)[0].is_user_admin \
-            or "answer_id" not in request.POST or not request.POST["answer_id"].isdigit():
-        return HttpResponse("Что-то пошло не так")
+            or not lib.check_method_post(request) or \
+            not lib.check_post_args(request, 'answer_id') or not request.POST["answer_id"].isdigit():
+        return HttpResponse("Вас не существует, не тот метод, или неправильный аргумент")
     cur_game.answer_ok(int(request.POST["answer_id"]))
     return HttpResponseRedirect(f"/game/{short_name}/answers")
 
@@ -119,7 +123,22 @@ def answer_ok(request, short_name):
 def answer_no(request, short_name):
     cur_user, cur_game = lib.get_user_and_game(request, short_name)
     if cur_user is None or not cur_game.users_information.filter(user=cur_user)[0].is_user_admin \
-            or "answer_id" not in request.POST or not request.POST["answer_id"].isdigit():
-        return HttpResponse("Что-то пошло не так")
+            or not lib.check_method_post(request) or \
+            not lib.check_post_args(request, 'answer_id') or not request.POST["answer_id"].isdigit():
+        return HttpResponse("Вас не существует, не тот метод, или неправильный аргумент")
     cur_game.answer_no(int(request.POST["answer_id"]))
     return HttpResponseRedirect(f"/game/{short_name}/answers")
+
+
+def add_admin(request, short_name):
+    cur_user, cur_game = lib.get_user_and_game(request, short_name)
+    if cur_user is None or not cur_game.users_information.filter(user=cur_user)[0].is_user_admin \
+            or not lib.check_method_post(request) or not lib.check_post_args(request, 'nick'):
+        return HttpResponse("У вас недостаточно прав для этого, не тот метод или нет аргумента")
+    new_admin = lib.get_user(nick=request.POST['nick'])
+    if new_admin is None or len(new_admin.my_games.filter(short_name=short_name)) == 0:
+        return HttpResponse("Такого ника не существует или он не вошел в эту игру")
+    new_admin_in_game = cur_game.users_information.filter(user=new_admin)[0]
+    new_admin_in_game.is_user_admin = True
+    new_admin_in_game.save()
+    return HttpResponseRedirect(f"/game/{short_name}")
