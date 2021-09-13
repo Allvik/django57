@@ -36,5 +36,15 @@
              <input type="submit">
          </form>
      </div>
+    <div>
+        {% if user.is_super_user %}
+            Добавить супер юзера
+            <form method="post" action="add_super_user">
+                {% csrf_token %}
+                <input name="nick" type="text">
+                <input type="submit" value="Submit">
+            </form>
+        {% endif %}
+    </div>
 </body>
 </html>

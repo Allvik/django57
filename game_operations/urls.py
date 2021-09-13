@@ -12,5 +12,5 @@ urlpatterns = [
     path('<short_name>/send_answer', views.add_answer),
     path('<short_name>/ok', views.answer_ok),
     path('<short_name>/no', views.answer_no),
-    path('<short_name>/add_admin', views.add_admin)
+    path('<short_name>/add_admin', views.add_admin),
 ]

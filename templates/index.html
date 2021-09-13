@@ -5,21 +5,31 @@
     <title>Здесь можно сыграть в ЧГК!</title>
 </head>
 <body>
-    <div>
-        Войдите, если у вас уже есть аккаунт
-        <form action="/enter_account" method="post">
-            {% csrf_token %}
-            {{ form }}
-            <input type="submit" value="Submit">
-        </form>
-    </div>
-    <div>
-        Зарегистрируйтесь, если вы тут впервые
-        <form action="/create_account" method="post">
-            {% csrf_token %}
-            {{ form }}
-            <input type="submit" value="Submit">
-        </form>
-    </div>
+<div>
+    Войдите, если у вас уже есть аккаунт
+    <form action="/enter_account" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div>
+                {{ field.label_tag }}
+                <div>{{ field }}</div>
+            </div>
+        {% endfor %}
+        <input type="submit" value="Submit">
+    </form>
+</div>
+<div>
+    Зарегистрируйтесь, если вы тут впервые
+    <form action="/create_account" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div>
+                {{ field.label_tag }}
+                <div>{{ field }}</div>
+            </div>
+        {% endfor %}
+        <input type="submit" value="Submit">
+    </form>
+</div>
 </body>
 </html>

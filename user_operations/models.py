@@ -15,6 +15,14 @@ class MyUser(models.Model):
         cur_game.users_information.add(cur_user_in_game)
         cur_game.save()
 
+    def become_super(self):
+        self.is_super_user = True
+        for game in self.my_games.all():
+            user_in_game = game.users_information.filter(user=self)[0]
+            user_in_game.is_user_admin = True
+            user_in_game.save()
+        self.save()
+
 
 class UserInGame(models.Model):
     user = models.ForeignKey('MyUser', on_delete=models.CASCADE)
