@@ -17,7 +17,7 @@ def create_account(request):
     if not form.is_valid() or lib.get_user(nick=form.cleaned_data['nick']) is not None:
         return HttpResponse("Некорректные данные")
     new_user = MyUser(nick=form.cleaned_data['nick'], password=form.cleaned_data['password'],
-                                              is_super_user=(form.cleaned_data['nick'] == 'allvik'))
+                      is_super_user=(form.cleaned_data['nick'] == 'allvik'))
     new_user.save()
     response = HttpResponseRedirect('/menu')
     response.set_cookie('user', new_user.id)
@@ -50,7 +50,8 @@ def get_menu(request):
 
 
 def add_super_user(request):
-    if not lib.check_user_cookie(request) or not lib.check_method_post(request) or not lib.check_post_args(request, 'nick'):
+    if not lib.check_user_cookie(request) or not lib.check_method_post(request) or not lib.check_post_args(request,
+                                                                                                           'nick'):
         return HttpResponse("Вы не вошли в аккаунт, не тот метод или нет параметров")
     cur_user = lib.get_user(id=int(request.COOKIES['user']))
     if cur_user is None or not cur_user.is_super_user:
