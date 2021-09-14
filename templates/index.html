@@ -1,35 +1,51 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Здесь можно сыграть в ЧГК!</title>
+    <link rel="stylesheet" href={% static "css/index.css"%}>
 </head>
 <body>
-<div>
-    Войдите, если у вас уже есть аккаунт
-    <form action="/enter_account" method="post">
-        {% csrf_token %}
-        {% for field in form %}
-            <div>
-                {{ field.label_tag }}
-                <div>{{ field }}</div>
-            </div>
-        {% endfor %}
-        <input type="submit" value="Submit">
-    </form>
+<div id="content">
+    <div style = "text-align: center;">
+
+        <form action="/enter_account" method="post">
+            <p>Войдите, если у вас уже есть аккаунт</p>
+            {% csrf_token %}
+            {% for field in form %}
+                <p>
+                    {{ field.label_tag }}
+                    <p class = "form-input">{{ field }}</p>
+                </p>
+            {% endfor %}
+            <input type="submit" value="Submit" class = "btn-new">
+        </form>
+    </div>
+    <div style = "text-align: center;">
+        <form action="/create_account" method="post">
+            <p>Зарегистрируйтесь, если вы тут впервые</p>
+            {% csrf_token %}
+            {% for field in form %}
+                <p>
+                    {{ field.label_tag }}
+                    <p class = "form-input">{{ field }}</p>
+                </p>
+            {% endfor %}
+            <input type="submit" value="Submit" class = "btn-new">
+        </form>
+    </div>
 </div>
-<div>
-    Зарегистрируйтесь, если вы тут впервые
-    <form action="/create_account" method="post">
-        {% csrf_token %}
-        {% for field in form %}
-            <div>
-                {{ field.label_tag }}
-                <div>{{ field }}</div>
-            </div>
-        {% endfor %}
-        <input type="submit" value="Submit">
-    </form>
-</div>
+
+<script>
+    let content = document.getElementById("content");
+    let body = document.querySelector("body");
+    let w = content.offsetWidth * 0.5;
+    content.style.left = `calc(50% - ${w}px)`;
+
+    let h = content.offsetHeight * 0.5;
+    content.style.top = `calc(50% - ${h}px)`;
+</script>
+
 </body>
 </html>

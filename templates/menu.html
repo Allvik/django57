@@ -23,7 +23,12 @@
             Создать игру:
             <form method="post" action="game/create">
                 {% csrf_token %}
-                {{ create_form }}
+                {% for field in create_form %}
+                    <div>
+                        <div>{{ field.label_tag }}</div>
+                        {{ field }}
+                    </div>
+                {% endfor %}
                 <input type="submit">
             </form>
         </div>
@@ -32,8 +37,13 @@
          Войти в игру:
          <form method="post" action="game/enter">
              {% csrf_token %}
-             {{ enter_form }}
-             <input type="submit">
+                {% for field in enter_form %}
+                    <div>
+                        <div>{{ field.label_tag }}</div>
+                        {{ field }}
+                    </div>
+                {% endfor %}
+             <input type="submit" value="Submit">
          </form>
      </div>
     <div>
@@ -41,7 +51,9 @@
             Добавить супер юзера
             <form method="post" action="add_super_user">
                 {% csrf_token %}
-                <input name="nick" type="text">
+                <div>
+                    <input name="nick" type="text">
+                </div>
                 <input type="submit" value="Submit">
             </form>
         {% endif %}
