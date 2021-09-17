@@ -44,7 +44,6 @@ def get_menu(request):
     cur_user = lib.get_user(id=int(request.COOKIES['user']))
     if cur_user is None:
         return HttpResponse("Вас не существует")
-    print(len(cur_user.my_games.all()))
     return render(request, "menu.html", {'user': cur_user, 'games': cur_user.my_games.all(),
                                          'create_form': create_game_form, 'enter_form': enter_game_form})
 

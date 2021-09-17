@@ -1,51 +1,47 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Здесь можно сыграть в ЧГК!</title>
-    <link rel="stylesheet" href={% static "css/index.css"%}>
+    <link rel='stylesheet' type="text/css" href="{% static 'css/index.css' %}">
 </head>
 <body>
-<div id="content">
-    <div style = "text-align: center;">
-
-        <form action="/enter_account" method="post">
-            <p>Войдите, если у вас уже есть аккаунт</p>
+<div class="container" id="container">
+    <div class="form-container sign-up-container">
+        <form action="/create_account" method="post">
             {% csrf_token %}
-            {% for field in form %}
-                <p>
-                    {{ field.label_tag }}
-                    <p class = "form-input">{{ field }}</p>
-                </p>
+            <h1>Create account</h1>
+            {% for filed in form %}
+                {{ filed }}
             {% endfor %}
-            <input type="submit" value="Submit" class = "btn-new">
+            <button>Sign Up</button>
         </form>
     </div>
-    <div style = "text-align: center;">
-        <form action="/create_account" method="post">
-            <p>Зарегистрируйтесь, если вы тут впервые</p>
+    <div class="form-container sign-in-container">
+        <form action="/enter_account" method="post">
+            <h1>Sign in</h1>
             {% csrf_token %}
-            {% for field in form %}
-                <p>
-                    {{ field.label_tag }}
-                    <p class = "form-input">{{ field }}</p>
-                </p>
+            {% for filed in form %}
+                {{ filed }}
             {% endfor %}
-            <input type="submit" value="Submit" class = "btn-new">
+            <button>Sign In</button>
         </form>
+    </div>
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h1>Welcome Back!</h1>
+                <p>To keep connected with us please login with your personal info</p>
+                <button class="ghost" id="signIn">Sign In</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+                <h1>Hello, Friend!</h1>
+                <p>Enter your personal details and start journey with us</p>
+                <button class="ghost" id="signUp">Sign Up</button>
+            </div>
+        </div>
     </div>
 </div>
-
-<script>
-    let content = document.getElementById("content");
-    let body = document.querySelector("body");
-    let w = content.offsetWidth * 0.5;
-    content.style.left = `calc(50% - ${w}px)`;
-
-    let h = content.offsetHeight * 0.5;
-    content.style.top = `calc(50% - ${h}px)`;
-</script>
-
+<script type="text/javascript" src="{% static 'js/index.js' %}"></script>
 </body>
 </html>
